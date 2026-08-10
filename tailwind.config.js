@@ -1,0 +1,85 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./index.html", "./pages/**/*.html", "./assets/js/**/*.js"],
+  theme: {
+    extend: {
+      colors: {
+        surface: {
+          subtle: "#F8F9FB",
+          base: "#FFFFFF",
+          strong: "#DFEAFF",
+          neutral: "#EDEDEE",
+        },
+        text: {
+          strong: "#191918",
+          default: "#4A4C53",
+          subtle: "#717279",
+          knockout: "#FFFFFF",
+        },
+        instructive: {
+          subtle: "#EBF1FD",
+          DEFAULT: "#5753FA",
+          strong: "#363498",
+          border: "#6E78FF",
+        },
+        line: {
+          subtle: "#CBCBCD",
+          default: "#8A8B90",
+          strong: "#4A4C53",
+        },
+        feedback: {
+          successBg: "#F1FBF1",
+          successText: "#3C6D4A",
+          warningBg: "#FEF8E7",
+          warningText: "#966B00",
+          criticalBg: "#FEF4F4",
+          criticalText: "#BE2626",
+        },
+      },
+      spacing: {
+        "010": "0.1rem",
+        "020": "0.2rem",
+        "040": "0.4rem",
+        "060": "0.6rem",
+        "080": "0.8rem",
+        "100": "1.0rem",
+        "120": "1.2rem",
+        "160": "1.6rem",
+        "180": "1.8rem",
+        "200": "2.0rem",
+        "240": "2.4rem",
+        "320": "3.2rem",
+        "400": "4.0rem",
+        "440": "4.4rem",
+        "480": "4.8rem",
+        "640": "6.4rem",
+        "800": "8.0rem",
+        "960": "9.6rem",
+      },
+      borderRadius: {
+        token: "8px",
+        "token-sm": "4px",
+        "token-lg": "12px",
+        "token-pill": "24px",
+      },
+      boxShadow: {
+        low: "0 2px 2px 0 rgba(37, 35, 104, 0.2)",
+        mid: "0 4px 8px 0 rgba(37, 35, 104, 0.2)",
+        high: "0 8px 16px 0 rgba(37, 35, 104, 0.2)",
+      },
+      fontFamily: {
+        sans: [
+          "Plus Jakarta Sans",
+          "Noto Sans TC",
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "sans-serif",
+        ],
+        serif: ["Noto Serif", "Noto Serif TC", "serif"],
+        mono: ["Inconsolata", "ui-monospace", "monospace"],
+      },
+    },
+  },
+  plugins: [],
+};

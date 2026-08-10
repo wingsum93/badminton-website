@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface-subtle font-sans text-[1.6rem] leading-[2.4rem] text-text-default antialiased;
+  }
+
+  a {
+    @apply text-instructive underline-offset-4;
+  }
+
+  a:hover {
+    @apply text-instructive-strong underline;
+  }
+
+  :focus-visible {
+    @apply outline outline-[2px] outline-offset-[3px] outline-instructive-border;
+  }
+}
+
+@layer components {
+  .site-shell {
+    @apply min-h-screen bg-surface-subtle text-text-default;
+  }
+
+  .site-header {
+    @apply border-b border-line-subtle bg-surface-base;
+  }
+
+  .header-inner {
+    @apply mx-auto flex max-w-[112rem] flex-col gap-160 px-160 py-160 md:flex-row md:items-center md:justify-between md:px-240;
+  }
+
+  .brand-link {
+    @apply text-[2.0rem] font-bold leading-[2.8rem] text-text-strong no-underline;
+  }
+
+  .site-nav {
+    @apply flex flex-wrap gap-080;
+  }
+
+  .nav-link {
+    @apply rounded-token px-120 py-080 text-[1.4rem] font-bold leading-[1.8rem] text-text-default no-underline;
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current="page"] {
+    @apply bg-instructive-subtle text-instructive-strong no-underline;
+  }
+
+  .main-wrap {
+    @apply mx-auto max-w-[112rem] px-160 py-320 md:px-240 md:py-480;
+  }
+
+  .hero {
+    @apply grid gap-240 border-b border-line-subtle pb-320 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-400 md:pb-480;
+  }
+
+  .eyebrow {
+    @apply mb-080 text-[1.4rem] font-bold leading-[1.8rem] text-instructive-strong;
+  }
+
+  .page-title {
+    @apply max-w-[76rem] text-[3.2rem] font-black leading-[4.0rem] text-text-strong md:text-[4.0rem] md:leading-[4.8rem];
+  }
+
+  .page-intro {
+    @apply mt-160 max-w-[72rem] text-[1.8rem] leading-[2.8rem] text-text-default;
+  }
+
+  .hero-panel {
+    @apply rounded-token border border-line-subtle bg-surface-base p-200 shadow-low;
+  }
+
+  .section-band {
+    @apply border-b border-line-subtle py-320 md:py-400;
+  }
+
+  .section-title {
+    @apply text-[2.4rem] font-black leading-[3.2rem] text-text-strong;
+  }
+
+  .section-copy {
+    @apply mt-080 max-w-[72rem] text-[1.6rem] leading-[2.4rem] text-text-default;
+  }
+
+  .topic-grid {
+    @apply mt-200 grid gap-160 md:grid-cols-2;
+  }
+
+  .topic-card {
+    @apply rounded-token border border-line-subtle bg-surface-base p-200 shadow-low;
+  }
+
+  .topic-card-title {
+    @apply text-[1.8rem] font-bold leading-[2.4rem] text-text-strong;
+  }
+
+  .topic-card-copy {
+    @apply mt-080 text-[1.4rem] leading-[2.0rem] text-text-default;
+  }
+
+  .topic-card-link {
+    @apply mt-160 inline-flex min-h-[4rem] items-center rounded-token border border-line-default bg-surface-base px-160 text-[1.4rem] font-bold leading-[1.8rem] no-underline;
+  }
+
+  .topic-card-link:hover {
+    @apply border-instructive-strong bg-instructive-subtle no-underline;
+  }
+
+  .lesson-list {
+    @apply mt-200 grid gap-120;
+  }
+
+  .lesson-item {
+    @apply rounded-token border border-line-subtle bg-surface-base p-160;
+  }
+
+  .lesson-title {
+    @apply text-[1.8rem] font-bold leading-[2.4rem] text-text-strong;
+  }
+
+  .lesson-body {
+    @apply mt-060 text-[1.5rem] leading-[2.4rem] text-text-default;
+  }
+
+  .cue-list {
+    @apply mt-160 grid gap-100 md:grid-cols-3;
+  }
+
+  .cue {
+    @apply rounded-token border border-line-subtle bg-instructive-subtle p-160 text-[1.4rem] font-semibold leading-[2.0rem] text-instructive-strong;
+  }
+
+  .embed-grid {
+    @apply mt-200 grid gap-160 md:grid-cols-2;
+  }
+
+  .embed-shell {
+    @apply min-h-[24rem] rounded-token border border-dashed border-line-default bg-surface-base p-160 shadow-low;
+  }
+
+  .embed-title {
+    @apply text-[1.6rem] font-bold leading-[2.0rem] text-text-strong;
+  }
+
+  .instagram-media.training-embed {
+    @apply mt-120 w-full max-w-none rounded-token border border-line-subtle bg-surface-subtle p-160 text-[1.4rem] leading-[2.0rem] text-text-default;
+  }
+
+  .embed-link {
+    @apply font-bold text-instructive-strong no-underline;
+  }
+
+  .site-footer {
+    @apply border-t border-line-subtle bg-surface-base;
+  }
+
+  .footer-inner {
+    @apply mx-auto max-w-[112rem] px-160 py-200 text-[1.4rem] leading-[2.0rem] text-text-subtle md:px-240;
+  }
+}
