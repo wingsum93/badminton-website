@@ -1,0 +1,7 @@
+services:
+  badminton-website:
+    build:
+      context: .
+    ports:
+      - "9413:80"
+    restart: unless-stopped
