@@ -4,7 +4,10 @@
   "private": true,
   "description": "Cantonese badminton coaching website with Tailwind CSS and Nginx Docker hosting.",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --minify",
+    "build": "npm run build:html && npm run build:css",
+    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --minify",
+    "build:html": "node scripts/build-html.mjs",
+    "check": "node scripts/check-links.mjs",
     "watch": "tailwindcss -i ./src/input.css -o ./assets/css/styles.css --watch"
   },
   "devDependencies": {

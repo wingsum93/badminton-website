@@ -1,0 +1,1 @@
+This project only support Chinese traditional.

@@ -95,8 +95,20 @@
     @apply mt-200 grid gap-160 md:grid-cols-2;
   }
 
+  .architecture-grid {
+    @apply lg:grid-cols-3;
+  }
+
   .topic-card {
     @apply rounded-token border border-line-subtle bg-surface-base p-200 shadow-low;
+  }
+
+  .architecture-card {
+    @apply flex flex-col;
+  }
+
+  .architecture-card .topic-card-link {
+    @apply mt-auto;
   }
 
   .topic-card-title {
@@ -115,8 +127,48 @@
     @apply border-instructive-strong bg-instructive-subtle no-underline;
   }
 
+  .architecture-list {
+    @apply mt-160 grid gap-080 text-[1.4rem] leading-[2.0rem];
+  }
+
+  .architecture-list li {
+    @apply text-text-default;
+  }
+
+  .architecture-list a {
+    @apply font-semibold text-instructive-strong no-underline;
+  }
+
+  .architecture-list a:hover {
+    @apply underline;
+  }
+
+  .topic-nested-list {
+    @apply mt-060 grid gap-040 pl-160;
+  }
+
+  .topic-nested-list a {
+    @apply font-medium text-text-default;
+  }
+
   .lesson-list {
     @apply mt-200 grid gap-120;
+  }
+
+  .lesson-group-list {
+    @apply mt-200 grid gap-240;
+  }
+
+  .lesson-group {
+    @apply rounded-token border border-line-subtle bg-surface-base p-160 shadow-low;
+  }
+
+  .lesson-group-header {
+    @apply border-b border-line-subtle pb-160;
+  }
+
+  .lesson-group-title {
+    @apply text-[2.0rem] font-black leading-[2.8rem] text-text-strong;
   }
 
   .lesson-item {
