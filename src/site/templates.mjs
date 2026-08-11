@@ -1,7 +1,10 @@
 import path from "node:path";
 import { categories, legacyPages, site } from "./content.mjs";
+import { instagramPostsByCategory } from "./instagram-posts.mjs";
 
 const homePath = "index.html";
+const instagramPostPattern =
+  /^https:\/\/(?:www\.)?instagram\.com\/(?:p|reel|tv)\/[A-Za-z0-9_-]+\/?(?:[?#].*)?$/;
 
 function escapeHtml(value) {
   return String(value)
@@ -19,6 +22,38 @@ function relativeHref(fromPath, toPath) {
 
 function assetHref(pagePath, assetPath) {
   return relativeHref(pagePath, assetPath);
+}
+
+function validateInstagramPosts() {
+  const categoryIds = new Set(categories.map((category) => category.id));
+
+  for (const categoryId of Object.keys(instagramPostsByCategory)) {
+    if (!categoryIds.has(categoryId)) {
+      throw new Error(`Unknown Instagram category: ${categoryId}`);
+    }
+
+    const posts = instagramPostsByCategory[categoryId];
+
+    if (!Array.isArray(posts)) {
+      throw new Error(`Instagram posts for ${categoryId} must be an array.`);
+    }
+
+    for (const [index, url] of posts.entries()) {
+      if (typeof url !== "string" || url.trim() === "") {
+        throw new Error(`Instagram post ${categoryId}[${index}] must be a non-empty URL.`);
+      }
+
+      if (!instagramPostPattern.test(url.trim())) {
+        throw new Error(
+          `Instagram post ${categoryId}[${index}] must be a post, reel, or tv URL from instagram.com.`,
+        );
+      }
+    }
+  }
+}
+
+function instagramPostsForCategory(categoryId) {
+  return instagramPostsByCategory[categoryId] ?? [];
 }
 
 function categoryById(id) {
@@ -65,9 +100,19 @@ function renderFooter() {
       </footer>`;
 }
 
-function renderShell({ pagePath, activeId, title, description, main }) {
+function renderShell({
+  pagePath,
+  activeId,
+  title,
+  description,
+  main,
+  hasInstagramEmbeds = false,
+}) {
   const cssHref = assetHref(pagePath, "assets/css/styles.css");
   const scriptHref = assetHref(pagePath, "assets/js/main.js");
+  const instagramScript = hasInstagramEmbeds
+    ? '    <script async src="https://www.instagram.com/embed.js"></script>\n'
+    : "";
 
   return `<!doctype html>
 <html lang="zh-Hant-HK">
@@ -88,7 +133,7 @@ ${main}
 
       ${renderFooter()}
     </div>
-    <script defer src="${scriptHref}"></script>
+${instagramScript}    <script defer src="${scriptHref}"></script>
   </body>
 </html>
 `;
@@ -196,7 +241,37 @@ ${topics}
           </section>`;
 }
 
-function renderCategoryMain(category) {
+function renderInstagramEmbeds(category, posts) {
+  if (posts.length === 0) {
+    return "";
+  }
+
+  const embeds = posts
+    .map((url, index) => {
+      const permalink = escapeHtml(url.trim());
+      const label = `${category.label} Instagram 示範 ${index + 1}`;
+
+      return `<article class="embed-shell">
+              <h3 class="embed-title">${escapeHtml(label)}</h3>
+              <blockquote class="instagram-media category-embed" data-instgrm-permalink="${permalink}" data-instgrm-version="14">
+                <a class="embed-link" href="${permalink}">在 Instagram 查看示範</a>
+              </blockquote>
+            </article>`;
+    })
+    .join("\n");
+
+  return `
+
+        <section class="section-band" aria-labelledby="${escapeHtml(category.id)}-instagram-title">
+          <h2 id="${escapeHtml(category.id)}-instagram-title" class="section-title">Instagram 示範</h2>
+          <p class="section-copy">由中央設定加入相關示範連結，重新 build 後會自動嵌入到呢個分類頁。</p>
+          <div class="embed-grid">
+${embeds}
+          </div>
+        </section>`;
+}
+
+function renderCategoryMain(category, instagramPosts) {
   const lessons = category.groups
     ? `<div class="lesson-group-list">
 ${category.groups.map(renderGroup).join("\n")}
@@ -223,7 +298,7 @@ ${category.topics.map(renderTopicItem).join("\n")}
           )}列表</h2>
           <p class="section-copy">${escapeHtml(category.description)}</p>
           ${lessons}
-        </section>`;
+        </section>${renderInstagramEmbeds(category, instagramPosts)}`;
 }
 
 function renderLegacyMain(page) {
@@ -262,6 +337,8 @@ function renderHomePage() {
 }
 
 function renderCategoryPage(category) {
+  const instagramPosts = instagramPostsForCategory(category.id);
+
   return {
     path: category.path,
     html: renderShell({
@@ -269,7 +346,8 @@ function renderCategoryPage(category) {
       activeId: category.id,
       title: `${category.label} | ${site.title}`,
       description: `廣東話羽毛球${category.label}教學。${category.description}`,
-      main: renderCategoryMain(category),
+      main: renderCategoryMain(category, instagramPosts),
+      hasInstagramEmbeds: instagramPosts.length > 0,
     }),
   };
 }
@@ -288,6 +366,8 @@ function renderLegacyPage(page) {
 }
 
 export function renderSite() {
+  validateInstagramPosts();
+
   return [
     renderHomePage(),
     ...categories.map(renderCategoryPage),

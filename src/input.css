@@ -196,15 +196,15 @@
   }
 
   .embed-shell {
-    @apply min-h-[24rem] rounded-token border border-dashed border-line-default bg-surface-base p-160 shadow-low;
+    @apply flex min-h-[24rem] flex-col items-center rounded-token border border-dashed border-line-default bg-surface-base p-160 shadow-low;
   }
 
   .embed-title {
     @apply text-[1.6rem] font-bold leading-[2.0rem] text-text-strong;
   }
 
-  .instagram-media.training-embed {
-    @apply mt-120 w-full max-w-none rounded-token border border-line-subtle bg-surface-subtle p-160 text-[1.4rem] leading-[2.0rem] text-text-default;
+  .instagram-media.category-embed {
+    @apply mx-auto mt-120 w-full max-w-[54rem] rounded-token border border-line-subtle bg-surface-subtle p-160 text-[1.4rem] leading-[2.0rem] text-text-default;
   }
 
   .embed-link {
