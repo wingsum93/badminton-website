@@ -86,7 +86,7 @@ function renderHeader(pagePath, activeId) {
   return `<header class="site-header">
         <div class="header-inner">
           <a class="brand-link" href="${homeHref}">${escapeHtml(site.title)}</a>
-          <nav class="site-nav" aria-label="主要導覽">
+          <nav class="site-nav" aria-label="主要導覽" data-scroll-nav>
             <a class="nav-link" href="${homeHref}"${homeCurrent}>首頁</a>
             ${categoryLinks}
           </nav>

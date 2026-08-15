@@ -31,23 +31,29 @@
   }
 
   .site-header {
-    @apply border-b border-line-subtle bg-surface-base;
+    @apply sticky top-0 z-20 border-b border-line-subtle bg-surface-base/95 backdrop-blur;
   }
 
   .header-inner {
-    @apply mx-auto flex max-w-[112rem] flex-col gap-160 px-160 py-160 md:flex-row md:items-center md:justify-between md:px-240;
+    @apply mx-auto flex max-w-[112rem] flex-col gap-120 px-160 py-120 md:flex-row md:items-center md:justify-between md:px-240 md:py-160;
   }
 
   .brand-link {
-    @apply text-[2.0rem] font-bold leading-[2.8rem] text-text-strong no-underline;
+    @apply text-[1.8rem] font-bold leading-[2.4rem] text-text-strong no-underline md:text-[2.0rem] md:leading-[2.8rem];
   }
 
   .site-nav {
-    @apply flex flex-wrap gap-080;
+    @apply -mx-160 flex snap-x snap-mandatory gap-080 overflow-x-auto px-160 pb-020 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-link {
-    @apply rounded-token px-120 py-080 text-[1.4rem] font-bold leading-[1.8rem] text-text-default no-underline;
+    @apply min-h-[3.6rem] shrink-0 snap-start rounded-token px-120 py-080 text-[1.4rem] font-bold leading-[1.8rem] text-text-default no-underline;
   }
 
   .nav-link:hover,
@@ -56,11 +62,11 @@
   }
 
   .main-wrap {
-    @apply mx-auto max-w-[112rem] px-160 py-320 md:px-240 md:py-480;
+    @apply mx-auto max-w-[112rem] px-160 py-240 md:px-240 md:py-480;
   }
 
   .hero {
-    @apply grid gap-240 border-b border-line-subtle pb-320 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-400 md:pb-480;
+    @apply grid gap-160 border-b border-line-subtle pb-240 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-400 md:pb-480;
   }
 
   .eyebrow {
@@ -68,19 +74,19 @@
   }
 
   .page-title {
-    @apply max-w-[76rem] text-[3.2rem] font-black leading-[4.0rem] text-text-strong md:text-[4.0rem] md:leading-[4.8rem];
+    @apply max-w-[76rem] text-[2.8rem] font-black leading-[3.4rem] text-text-strong md:text-[4.0rem] md:leading-[4.8rem];
   }
 
   .page-intro {
-    @apply mt-160 max-w-[72rem] text-[1.8rem] leading-[2.8rem] text-text-default;
+    @apply mt-120 max-w-[72rem] text-[1.6rem] leading-[2.5rem] text-text-default md:mt-160 md:text-[1.8rem] md:leading-[2.8rem];
   }
 
   .hero-panel {
-    @apply rounded-token border border-line-subtle bg-surface-base p-200 shadow-low;
+    @apply min-w-0 rounded-token border-0 bg-transparent p-0 shadow-none md:border md:border-line-subtle md:bg-surface-base md:p-200 md:shadow-low;
   }
 
   .section-band {
-    @apply border-b border-line-subtle py-320 md:py-400;
+    @apply border-b border-line-subtle py-240 md:py-400;
   }
 
   .section-title {
@@ -92,7 +98,7 @@
   }
 
   .topic-grid {
-    @apply mt-200 grid gap-160 md:grid-cols-2;
+    @apply mt-160 grid gap-120 md:mt-200 md:grid-cols-2 md:gap-160;
   }
 
   .architecture-grid {
@@ -100,7 +106,7 @@
   }
 
   .topic-card {
-    @apply rounded-token border border-line-subtle bg-surface-base p-200 shadow-low;
+    @apply rounded-token border border-line-subtle bg-surface-base p-160 shadow-low md:p-200;
   }
 
   .architecture-card {
@@ -108,7 +114,7 @@
   }
 
   .architecture-card .topic-card-link {
-    @apply mt-auto;
+    @apply md:mt-auto;
   }
 
   .topic-card-title {
@@ -120,7 +126,7 @@
   }
 
   .topic-card-link {
-    @apply mt-160 inline-flex min-h-[4rem] items-center rounded-token border border-line-default bg-surface-base px-160 text-[1.4rem] font-bold leading-[1.8rem] no-underline;
+    @apply mt-120 inline-flex min-h-[4rem] items-center rounded-token border border-line-default bg-surface-base px-160 text-[1.4rem] font-bold leading-[1.8rem] no-underline md:mt-160;
   }
 
   .topic-card-link:hover {
@@ -128,7 +134,7 @@
   }
 
   .architecture-list {
-    @apply mt-160 grid gap-080 text-[1.4rem] leading-[2.0rem];
+    @apply mt-160 hidden gap-080 text-[1.4rem] leading-[2.0rem] md:grid;
   }
 
   .architecture-list li {
@@ -152,19 +158,19 @@
   }
 
   .lesson-list {
-    @apply mt-200 grid gap-120;
+    @apply mt-160 grid gap-100 md:mt-200 md:gap-120;
   }
 
   .lesson-group-list {
-    @apply mt-200 grid gap-240;
+    @apply mt-200 grid gap-240 md:gap-320;
   }
 
   .lesson-group {
-    @apply rounded-token border border-line-subtle bg-surface-base p-160 shadow-low;
+    @apply min-w-0 scroll-mt-[11rem] border-t border-line-subtle pt-200 first:border-t-0 first:pt-0 md:scroll-mt-[8rem];
   }
 
   .lesson-group-header {
-    @apply border-b border-line-subtle pb-160;
+    @apply pb-040;
   }
 
   .lesson-group-title {
@@ -172,7 +178,7 @@
   }
 
   .lesson-item {
-    @apply rounded-token border border-line-subtle bg-surface-base p-160;
+    @apply min-w-0 scroll-mt-[11rem] rounded-token border border-line-subtle bg-surface-base p-120 shadow-low md:scroll-mt-[8rem] md:p-160;
   }
 
   .lesson-title {
@@ -184,19 +190,19 @@
   }
 
   .cue-list {
-    @apply mt-160 grid gap-100 md:grid-cols-3;
+    @apply mt-120 flex flex-wrap gap-080 md:mt-160 md:grid md:grid-cols-3 md:gap-100;
   }
 
   .cue {
-    @apply rounded-token border border-line-subtle bg-instructive-subtle p-160 text-[1.4rem] font-semibold leading-[2.0rem] text-instructive-strong;
+    @apply min-w-0 rounded-token border border-line-subtle bg-instructive-subtle px-120 py-080 text-[1.4rem] font-semibold leading-[2.0rem] text-instructive-strong md:p-160;
   }
 
   .embed-grid {
-    @apply mt-200 grid gap-160 md:grid-cols-2;
+    @apply mt-160 grid min-w-0 gap-160 md:mt-200 md:grid-cols-2;
   }
 
   .embed-shell {
-    @apply flex min-h-[24rem] flex-col items-center rounded-token border border-dashed border-line-default bg-surface-base p-160 shadow-low;
+    @apply flex min-w-0 flex-col items-center rounded-token border border-dashed border-line-default bg-surface-base p-120 shadow-low md:min-h-[24rem] md:p-160;
   }
 
   .embed-title {
@@ -204,7 +210,7 @@
   }
 
   .instagram-media.category-embed {
-    @apply mx-auto mt-120 w-full max-w-[54rem] rounded-token border border-line-subtle bg-surface-subtle p-160 text-[1.4rem] leading-[2.0rem] text-text-default;
+    @apply mx-auto mt-120 w-full min-w-0 max-w-full rounded-token border border-line-subtle bg-surface-subtle p-120 text-[1.4rem] leading-[2.0rem] text-text-default md:max-w-[54rem] md:p-160;
   }
 
   .embed-link {
