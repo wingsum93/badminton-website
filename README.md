@@ -223,3 +223,7 @@ ssh "$MAC_MINI_USER@$MAC_MINI_HOST" "cd /opt/badminton-website && docker compose
 ## Approach 2: Watchtower Auto Deploy
 
 For a Portainer-based Watchtower setup using the OrbStack Docker engine, see [doc/PORTAINER_WATCHTOWER_DEPLOY.md](doc/PORTAINER_WATCHTOWER_DEPLOY.md).
+
+## Approach 3: k3s Deploy
+
+For a k3s deployment using raw Kubernetes manifests, private GHCR image pulls, versioned `v1.x.y` image tags, and the default Traefik Ingress controller, see [doc/K3S_DEPLOY.md](doc/K3S_DEPLOY.md).
