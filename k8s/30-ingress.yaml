@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: badminton.example.local
+    - host: badminton.eric-dream.com
       http:
         paths:
           - path: /
