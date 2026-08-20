@@ -1,6 +1,6 @@
 {
   "name": "badminton-coaching-website",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Cantonese badminton coaching website with Tailwind CSS and Nginx Docker hosting.",
   "scripts": {

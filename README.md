@@ -226,4 +226,4 @@ For a Portainer-based Watchtower setup using the OrbStack Docker engine, see [do
 
 ## Approach 3: k3s Deploy
 
-For a k3s deployment using raw Kubernetes manifests, private GHCR image pulls, versioned `v1.x.y` image tags, and the default Traefik Ingress controller, see [doc/K3S_DEPLOY.md](doc/K3S_DEPLOY.md).
+For a k3s deployment using raw Kubernetes manifests, private GHCR image pulls, versioned semver image tags such as `v0.0.1`, and the default Traefik Ingress controller, see [doc/K3S_DEPLOY.md](doc/K3S_DEPLOY.md).

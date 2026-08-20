@@ -6,27 +6,27 @@ The Kubernetes manifests use:
 
 ```text
 Namespace: badminton-website
-Image: ghcr.io/wingsum93/badminton-website:v0.0.0
+Image: ghcr.io/wingsum93/badminton-website:v0.0.1
 Ingress host: badminton.example.local
 ```
 
-Replace `v0.0.0` with the `v1.x.y` image tag you publish for a release.
+Replace `v0.0.1` with the versioned image tag you publish for a release.
 
 ## 1. Publish a Versioned Image
 
 Open the `Docker Image` GitHub Actions workflow and run it manually with an image tag:
 
 ```text
-v1.2.3
+v0.0.1
 ```
 
 The workflow validates that the tag matches `vMAJOR.MINOR.PATCH` and publishes:
 
 ```text
-ghcr.io/wingsum93/badminton-website:v1.2.3
+ghcr.io/wingsum93/badminton-website:v0.0.1
 ```
 
-It may also publish `latest` for convenience, but the k3s manifests should use the immutable `v1.x.y` tag for predictable rollouts and rollbacks.
+It may also publish `latest` for convenience, but the k3s manifests should use the immutable versioned tag for predictable rollouts and rollbacks.
 
 ## 2. Create the GHCR Pull Secret
 
@@ -54,7 +54,7 @@ Update the Deployment image before applying:
 
 ```bash
 kubectl set image --local -f k8s/20-deployment.yaml \
-  web=ghcr.io/wingsum93/badminton-website:v1.2.3 \
+  web=ghcr.io/wingsum93/badminton-website:v0.0.1 \
   -o yaml > /tmp/badminton-website-deployment.yaml
 ```
 
@@ -62,12 +62,14 @@ Then apply the manifests:
 
 ```bash
 kubectl apply -f k8s/00-namespace.yaml
+kubectl apply -f k8s/05-resource-quota.yaml
 kubectl apply -f k8s/10-service.yaml
 kubectl apply -f /tmp/badminton-website-deployment.yaml
 kubectl apply -f k8s/30-ingress.yaml
+kubectl apply -f k8s/40-hpa.yaml
 ```
 
-For a direct edit instead, replace `v0.0.0` in `k8s/20-deployment.yaml` with the release tag and run:
+For a direct edit instead, replace `v0.0.1` in `k8s/20-deployment.yaml` with the release tag and run:
 
 ```bash
 kubectl apply -f k8s/
@@ -97,6 +99,8 @@ Check rollout status:
 kubectl -n badminton-website rollout status deployment/badminton-website
 kubectl -n badminton-website get pods
 kubectl -n badminton-website get ingress
+kubectl -n badminton-website get quota
+kubectl -n badminton-website get hpa
 ```
 
 Check the route:
@@ -105,8 +109,10 @@ Check the route:
 curl -H "Host: badminton.example.local" http://<k3s-node-ip>/
 ```
 
+The HPA requires metrics-server to be available in the cluster. Without it, the HPA resource can be created but cannot calculate CPU or memory scaling decisions.
+
 ## Tag Policy
 
-Use `v1.x.y` tags for Kubernetes deployments. They are valid Docker tags and work well in k3s.
+Use `v0.0.x` or later semver tags for Kubernetes deployments. They are valid Docker tags and work well in k3s.
 
-Do not deploy `latest` in Kubernetes. It is mutable, weaker for rollbacks, and can interact poorly with cached image pulls. Treat each `v1.x.y` tag as immutable; publish a new patch version instead of overwriting an existing tag.
+Do not deploy `latest` in Kubernetes. It is mutable, weaker for rollbacks, and can interact poorly with cached image pulls. Treat each semver tag as immutable; publish a new patch version instead of overwriting an existing tag.

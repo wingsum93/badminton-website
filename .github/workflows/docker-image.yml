@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Version image tag to publish, for example v1.2.3"
-        required: true
+        description: "Version image tag to publish, for example v0.0.1"
+        required: false
         type: string
 
 permissions:
@@ -41,20 +41,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Validate release image tag
-        if: github.event_name == 'workflow_dispatch'
+      - name: Resolve release image tag
+        id: release_tag
         env:
-          IMAGE_TAG: ${{ github.event.inputs.image_tag }}
+          INPUT_IMAGE_TAG: ${{ github.event.inputs.image_tag }}
         run: |
-          if ! printf '%s\n' "$IMAGE_TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "image_tag must match vMAJOR.MINOR.PATCH, for example v1.2.3" >&2
+          if [ -n "$INPUT_IMAGE_TAG" ]; then
+            image_tag="$INPUT_IMAGE_TAG"
+          else
+            package_version="$(node -p "require('./package.json').version")"
+            image_tag="v${package_version}"
+          fi
+
+          if ! printf '%s\n' "$image_tag" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "image_tag must match vMAJOR.MINOR.PATCH, for example v0.0.1" >&2
             exit 1
           fi
+
+          echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Prepare Docker tags
         id: tags
         env:
-          IMAGE_TAG: ${{ github.event.inputs.image_tag }}
+          IMAGE_TAG: ${{ steps.release_tag.outputs.image_tag }}
         run: |
           image="${REGISTRY}/${IMAGE_NAME}"
           short_sha="${GITHUB_SHA::7}"
@@ -63,9 +72,7 @@ jobs:
             echo "tags<<EOF"
             echo "${image}:latest"
             echo "${image}:sha-${short_sha}"
-            if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-              echo "${image}:${IMAGE_TAG}"
-            fi
+            echo "${image}:${IMAGE_TAG}"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
