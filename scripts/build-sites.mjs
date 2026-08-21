@@ -16,6 +16,7 @@ const files = [
   "pages/strokes.html",
   "pages/tactics.html",
   "pages/training.html",
+  "pages/wipe-power.html",
   "assets/css/styles.css",
   "assets/js/main.js",
 ];

@@ -1,6 +1,9 @@
 import path from "node:path";
-import { categories, legacyPages, site } from "./content.mjs";
-import { instagramPostsByCategory } from "./instagram-posts.mjs";
+import { categories, legacyPages, site, topicPages } from "./content.mjs";
+import {
+  instagramPostsByCategory,
+  instagramPostsByPage,
+} from "./instagram-posts.mjs";
 
 const homePath = "index.html";
 const instagramPostPattern =
@@ -24,36 +27,59 @@ function assetHref(pagePath, assetPath) {
   return relativeHref(pagePath, assetPath);
 }
 
+function validateInstagramPostList(ownerLabel, posts) {
+  if (!Array.isArray(posts)) {
+    throw new Error(`Instagram posts for ${ownerLabel} must be an array.`);
+  }
+
+  for (const [index, post] of posts.entries()) {
+    if (!post || typeof post !== "object" || Array.isArray(post)) {
+      throw new Error(`Instagram post ${ownerLabel}[${index}] must be an object.`);
+    }
+
+    if (typeof post.title !== "string" || post.title.trim() === "") {
+      throw new Error(`Instagram post ${ownerLabel}[${index}].title must be non-empty text.`);
+    }
+
+    if (typeof post.url !== "string" || post.url.trim() === "") {
+      throw new Error(`Instagram post ${ownerLabel}[${index}].url must be a non-empty URL.`);
+    }
+
+    if (!instagramPostPattern.test(post.url.trim())) {
+      throw new Error(
+        `Instagram post ${ownerLabel}[${index}].url must be a post, reel, or tv URL from instagram.com.`,
+      );
+    }
+  }
+}
+
 function validateInstagramPosts() {
   const categoryIds = new Set(categories.map((category) => category.id));
+  const pageIds = new Set(topicPages.map((page) => page.id));
 
-  for (const categoryId of Object.keys(instagramPostsByCategory)) {
+  for (const [categoryId, posts] of Object.entries(instagramPostsByCategory)) {
     if (!categoryIds.has(categoryId)) {
       throw new Error(`Unknown Instagram category: ${categoryId}`);
     }
 
-    const posts = instagramPostsByCategory[categoryId];
+    validateInstagramPostList(categoryId, posts);
+  }
 
-    if (!Array.isArray(posts)) {
-      throw new Error(`Instagram posts for ${categoryId} must be an array.`);
+  for (const [pageId, posts] of Object.entries(instagramPostsByPage)) {
+    if (!pageIds.has(pageId)) {
+      throw new Error(`Unknown Instagram page: ${pageId}`);
     }
 
-    for (const [index, url] of posts.entries()) {
-      if (typeof url !== "string" || url.trim() === "") {
-        throw new Error(`Instagram post ${categoryId}[${index}] must be a non-empty URL.`);
-      }
-
-      if (!instagramPostPattern.test(url.trim())) {
-        throw new Error(
-          `Instagram post ${categoryId}[${index}] must be a post, reel, or tv URL from instagram.com.`,
-        );
-      }
-    }
+    validateInstagramPostList(pageId, posts);
   }
 }
 
 function instagramPostsForCategory(categoryId) {
   return instagramPostsByCategory[categoryId] ?? [];
+}
+
+function instagramPostsForPage(pageId) {
+  return instagramPostsByPage[pageId] ?? [];
 }
 
 function categoryById(id) {
@@ -68,6 +94,14 @@ function categoryById(id) {
 
 function withAnchor(href, anchor) {
   return anchor ? `${href}#${anchor}` : href;
+}
+
+function topicHref(pagePath, category, topic) {
+  if (topic.path) {
+    return relativeHref(pagePath, topic.path);
+  }
+
+  return withAnchor(relativeHref(pagePath, category.path), topic.id);
 }
 
 function renderHeader(pagePath, activeId) {
@@ -152,11 +186,8 @@ function renderTopicLinks(pagePath, category) {
         const groupHref = withAnchor(relativeHref(pagePath, category.path), group.id);
         const topicLinks = group.topics
           .map((topic) => {
-            const topicHref = withAnchor(
-              relativeHref(pagePath, category.path),
-              topic.id,
-            );
-            return `<li><a href="${topicHref}">${escapeHtml(topic.label)}</a></li>`;
+            const href = topicHref(pagePath, category, topic);
+            return `<li><a href="${href}">${escapeHtml(topic.label)}</a></li>`;
           })
           .join("");
 
@@ -170,8 +201,8 @@ function renderTopicLinks(pagePath, category) {
 
   return category.topics
     .map((topic) => {
-      const topicHref = withAnchor(relativeHref(pagePath, category.path), topic.id);
-      return `<li><a href="${topicHref}">${escapeHtml(topic.label)}</a></li>`;
+      const href = topicHref(pagePath, category, topic);
+      return `<li><a href="${href}">${escapeHtml(topic.label)}</a></li>`;
     })
     .join("");
 }
@@ -221,15 +252,24 @@ ${cards}
         </section>`;
 }
 
-function renderTopicItem(topic) {
+function renderTopicItem(topic, pagePath) {
+  if (topic.path) {
+    return `<a class="lesson-item lesson-item-link" id="${escapeHtml(
+      topic.id,
+    )}" href="${relativeHref(pagePath, topic.path)}">
+              <span class="lesson-title">${escapeHtml(topic.label)}</span>
+              <span class="lesson-body">${escapeHtml(topic.description)}</span>
+            </a>`;
+  }
+
   return `<article class="lesson-item" id="${escapeHtml(topic.id)}">
               <h3 class="lesson-title">${escapeHtml(topic.label)}</h3>
               <p class="lesson-body">${escapeHtml(topic.description)}</p>
             </article>`;
 }
 
-function renderGroup(group) {
-  const topics = group.topics.map(renderTopicItem).join("\n");
+function renderGroup(group, pagePath) {
+  const topics = group.topics.map((topic) => renderTopicItem(topic, pagePath)).join("\n");
   return `<section class="lesson-group" id="${escapeHtml(group.id)}">
             <div class="lesson-group-header">
               <h3 class="lesson-group-title">${escapeHtml(group.label)}</h3>
@@ -247,14 +287,14 @@ function renderInstagramEmbeds(category, posts) {
   }
 
   const embeds = posts
-    .map((url, index) => {
-      const permalink = escapeHtml(url.trim());
-      const label = `${category.label} Instagram 示範 ${index + 1}`;
+    .map((post) => {
+      const permalink = escapeHtml(post.url.trim());
+      const label = post.title.trim();
 
       return `<article class="embed-shell">
               <h3 class="embed-title">${escapeHtml(label)}</h3>
               <blockquote class="instagram-media category-embed" data-instgrm-permalink="${permalink}" data-instgrm-version="14">
-                <a class="embed-link" href="${permalink}">在 Instagram 查看示範</a>
+                <a class="embed-link" href="${permalink}">在 Instagram 查看${escapeHtml(label)}示範</a>
               </blockquote>
             </article>`;
     })
@@ -264,7 +304,7 @@ function renderInstagramEmbeds(category, posts) {
 
         <section class="section-band" aria-labelledby="${escapeHtml(category.id)}-instagram-title">
           <h2 id="${escapeHtml(category.id)}-instagram-title" class="section-title">Instagram 示範</h2>
-          <p class="section-copy">由中央設定加入相關示範連結，重新 build 後會自動嵌入到呢個分類頁。</p>
+          <p class="section-copy">相關示範連結會喺重新 build 後自動嵌入到呢個頁面。</p>
           <div class="embed-grid">
 ${embeds}
           </div>
@@ -274,10 +314,10 @@ ${embeds}
 function renderCategoryMain(category, instagramPosts) {
   const lessons = category.groups
     ? `<div class="lesson-group-list">
-${category.groups.map(renderGroup).join("\n")}
+${category.groups.map((group) => renderGroup(group, category.path)).join("\n")}
           </div>`
     : `<div class="lesson-list">
-${category.topics.map(renderTopicItem).join("\n")}
+${category.topics.map((topic) => renderTopicItem(topic, category.path)).join("\n")}
           </div>`;
 
   return `        <section class="hero">
@@ -299,6 +339,39 @@ ${category.topics.map(renderTopicItem).join("\n")}
           <p class="section-copy">${escapeHtml(category.description)}</p>
           ${lessons}
         </section>${renderInstagramEmbeds(category, instagramPosts)}`;
+}
+
+function renderTopicPageMain(page, instagramPosts) {
+  const parentCategory = categoryById(page.parentCategoryId);
+  const parentHref = withAnchor(
+    relativeHref(page.path, parentCategory.path),
+    page.parentAnchor,
+  );
+
+  return `        <section class="hero">
+          <div>
+            <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
+            <h1 class="page-title">${escapeHtml(page.title)}</h1>
+            <p class="page-intro">${escapeHtml(page.intro)}</p>
+            <a class="topic-card-link" href="${parentHref}">返回${escapeHtml(
+              parentCategory.label,
+            )}</a>
+          </div>
+          <aside class="hero-panel" aria-label="${escapeHtml(page.label)}重點">
+            <h2 class="topic-card-title">練習重點</h2>
+            ${renderCueList(page.cues)}
+          </aside>
+        </section>
+
+        <section class="section-band" aria-labelledby="${escapeHtml(page.id)}-list-title">
+          <h2 id="${escapeHtml(page.id)}-list-title" class="section-title">${escapeHtml(
+            page.label,
+          )}重點</h2>
+          <p class="section-copy">${escapeHtml(page.description)}</p>
+          <div class="lesson-list">
+${page.topics.map((topic) => renderTopicItem(topic, page.path)).join("\n")}
+          </div>
+        </section>${renderInstagramEmbeds(page, instagramPosts)}`;
 }
 
 function renderLegacyMain(page) {
@@ -365,12 +438,29 @@ function renderLegacyPage(page) {
   };
 }
 
+function renderTopicPage(page) {
+  const instagramPosts = instagramPostsForPage(page.id);
+
+  return {
+    path: page.path,
+    html: renderShell({
+      pagePath: page.path,
+      activeId: page.parentCategoryId,
+      title: `${page.label} | ${site.title}`,
+      description: page.intro,
+      main: renderTopicPageMain(page, instagramPosts),
+      hasInstagramEmbeds: instagramPosts.length > 0,
+    }),
+  };
+}
+
 export function renderSite() {
   validateInstagramPosts();
 
   return [
     renderHomePage(),
     ...categories.map(renderCategoryPage),
+    ...topicPages.map(renderTopicPage),
     ...legacyPages.map(renderLegacyPage),
   ];
 }
