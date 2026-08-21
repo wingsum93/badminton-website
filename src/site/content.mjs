@@ -221,6 +221,13 @@ export const categories = [
               "用手指改變拍面，把球由一邊網前勾到另一邊，製造空位。",
           },
           {
+            id: "net-wipe-power",
+            label: "抹球發力",
+            path: "pages/wipe-power.html",
+            description:
+              "用放鬆手指帶動拍面，由低點向前上方抹過球底，重點係拍面穩定、發力短促，同擊球後即刻回復準備。",
+          },
+          {
             id: "net-kill",
             label: "撲球",
             description:
@@ -356,6 +363,43 @@ export const categories = [
         label: "實戰訓練",
         description:
           "用限制條件、指定開局或分數壓力，把技術帶入對抗。",
+      },
+    ],
+  },
+];
+
+export const topicPages = [
+  {
+    id: "wipe-power",
+    label: "抹球發力",
+    path: "pages/wipe-power.html",
+    parentCategoryId: "strokes",
+    parentAnchor: "net-wipe-power",
+    eyebrow: "擊球技術 / 網前",
+    title: "抹球發力",
+    intro:
+      "抹球發力係網前控制球質嘅細動作，重點唔係大力揮拍，而係用放鬆手指、穩定拍面同短促發力，令球貼網又有變化。",
+    cues: ["手指放鬆", "拍面穩定", "抹完即刻準備"],
+    description:
+      "由低點向前上方抹過球底，控制拍面同接觸時間，避免用手臂大動作硬推。",
+    topics: [
+      {
+        id: "contact",
+        label: "擊球接觸",
+        description:
+          "球拍先放到球底附近，拍面微微打開，用手指帶動拍面向前上方抹過球底。",
+      },
+      {
+        id: "power",
+        label: "發力節奏",
+        description:
+          "準備時保持放鬆，真正發力只喺接觸一刻短促完成，避免由後向前大幅度揮拍。",
+      },
+      {
+        id: "recovery",
+        label: "收拍回復",
+        description:
+          "抹完之後球拍留喺身前，身體重心保持低，準備處理對手挑球、撲球或者再放網。",
       },
     ],
   },

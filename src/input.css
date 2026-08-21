@@ -181,12 +181,16 @@
     @apply min-w-0 scroll-mt-[11rem] rounded-token border border-line-subtle bg-surface-base p-120 shadow-low md:scroll-mt-[8rem] md:p-160;
   }
 
+  .lesson-item-link {
+    @apply block text-text-default no-underline transition-colors hover:border-instructive-strong hover:bg-instructive-subtle hover:no-underline;
+  }
+
   .lesson-title {
     @apply text-[1.8rem] font-bold leading-[2.4rem] text-text-strong;
   }
 
   .lesson-body {
-    @apply mt-060 text-[1.5rem] leading-[2.4rem] text-text-default;
+    @apply block mt-060 text-[1.5rem] leading-[2.4rem] text-text-default;
   }
 
   .cue-list {
