@@ -22,7 +22,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: web
-          image: ghcr.io/wingsum93/badminton-website:v0.0.2
+          image: ghcr.io/wingsum93/badminton-website:v0.0.3
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
