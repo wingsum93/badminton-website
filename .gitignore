@@ -1,6 +1,9 @@
 .DS_Store
 node_modules/
 dist/
+index.html
+pages/
+assets/css/styles.css
 npm-debug.log*
 .env
 .env.*

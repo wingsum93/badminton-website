@@ -228,4 +228,8 @@
   .footer-inner {
     @apply mx-auto max-w-[112rem] px-160 py-200 text-[1.4rem] leading-[2.0rem] text-text-subtle md:px-240;
   }
+
+  .footer-version {
+    @apply mt-040 text-[1.1rem] leading-[1.6rem] text-text-subtle opacity-75;
+  }
 }

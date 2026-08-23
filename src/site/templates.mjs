@@ -1,10 +1,15 @@
 import path from "node:path";
+import { readFileSync } from "node:fs";
 import { categories, legacyPages, site, topicPages } from "./content.mjs";
 import {
   instagramPostsByCategory,
   instagramPostsByPage,
 } from "./instagram-posts.mjs";
 
+const packageJson = JSON.parse(
+  readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
+);
+const websiteVersion = packageJson.version ?? "0.0.0";
 const homePath = "index.html";
 const instagramPostPattern =
   /^https:\/\/(?:www\.)?instagram\.com\/(?:p|reel|tv)\/[A-Za-z0-9_-]+\/?(?:[?#].*)?$/;
@@ -130,7 +135,10 @@ function renderHeader(pagePath, activeId) {
 
 function renderFooter() {
   return `<footer class="site-footer">
-        <div class="footer-inner">${escapeHtml(site.footer)}</div>
+        <div class="footer-inner">
+          <div>${escapeHtml(site.footer)}</div>
+          <div class="footer-version">v${escapeHtml(websiteVersion)}</div>
+        </div>
       </footer>`;
 }
 
