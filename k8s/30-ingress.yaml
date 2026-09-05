@@ -19,3 +19,13 @@ spec:
                 name: badminton-website
                 port:
                   name: http
+    - host: badminton.fatboytech.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: badminton-website
+                port:
+                  name: http
