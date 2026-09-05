@@ -2,7 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: badminton-website
-  namespace: badminton-website
   labels:
     app.kubernetes.io/name: badminton-website
     app.kubernetes.io/component: web

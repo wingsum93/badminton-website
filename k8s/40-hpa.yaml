@@ -2,7 +2,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: badminton-website
-  namespace: badminton-website
   labels:
     app.kubernetes.io/name: badminton-website
     app.kubernetes.io/component: web
