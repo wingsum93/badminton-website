@@ -2,7 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: badminton-website
-  namespace: badminton-website
   labels:
     app.kubernetes.io/name: badminton-website
     app.kubernetes.io/component: web
@@ -10,6 +9,16 @@ spec:
   ingressClassName: traefik
   rules:
     - host: badminton.eric-dream.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: badminton-website
+                port:
+                  name: http
+    - host: badminton.fatboytech.org
       http:
         paths:
           - path: /

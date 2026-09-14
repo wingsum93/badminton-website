@@ -5,12 +5,13 @@ This deploys the static Nginx container to k3s with the default Traefik Ingress 
 The Kubernetes manifests use:
 
 ```text
-Namespace: badminton-website
+Namespace: provided by DevOps at deploy time
 Image: ghcr.io/wingsum93/badminton-website:v0.0.1
 Ingress host: badminton.example.local
 ```
 
 Replace `v0.0.1` with the versioned image tag you publish for a release.
+Set `DEPLOY_NAMESPACE` to the namespace provided by DevOps before running the Kubernetes commands.
 
 ## 1. Publish a Versioned Image
 
@@ -33,9 +34,10 @@ It may also publish `latest` for convenience, but the k3s manifests should use t
 Create a GitHub token that can read packages, then run this against the k3s cluster:
 
 ```bash
-kubectl apply -f k8s/00-namespace.yaml
+export DEPLOY_NAMESPACE="<devops-provided-namespace>"
+kubectl get namespace "$DEPLOY_NAMESPACE"
 
-kubectl -n badminton-website create secret docker-registry ghcr \
+kubectl -n "$DEPLOY_NAMESPACE" create secret docker-registry ghcr-secret \
   --docker-server=ghcr.io \
   --docker-username="<github-username>" \
   --docker-password="<github-token-with-read-packages>" \
@@ -45,7 +47,7 @@ kubectl -n badminton-website create secret docker-registry ghcr \
 If the secret already exists, update it by deleting and recreating it:
 
 ```bash
-kubectl -n badminton-website delete secret ghcr
+kubectl -n "$DEPLOY_NAMESPACE" delete secret ghcr-secret
 ```
 
 ## 3. Set the Image Tag
@@ -61,18 +63,17 @@ kubectl set image --local -f k8s/20-deployment.yaml \
 Then apply the manifests:
 
 ```bash
-kubectl apply -f k8s/00-namespace.yaml
-kubectl apply -f k8s/05-resource-quota.yaml
-kubectl apply -f k8s/10-service.yaml
-kubectl apply -f /tmp/badminton-website-deployment.yaml
-kubectl apply -f k8s/30-ingress.yaml
-kubectl apply -f k8s/40-hpa.yaml
+kubectl -n "$DEPLOY_NAMESPACE" apply -f k8s/05-resource-quota.yaml
+kubectl -n "$DEPLOY_NAMESPACE" apply -f k8s/10-service.yaml
+kubectl -n "$DEPLOY_NAMESPACE" apply -f /tmp/badminton-website-deployment.yaml
+kubectl -n "$DEPLOY_NAMESPACE" apply -f k8s/30-ingress.yaml
+kubectl -n "$DEPLOY_NAMESPACE" apply -f k8s/40-hpa.yaml
 ```
 
 For a direct edit instead, replace `v0.0.1` in `k8s/20-deployment.yaml` with the release tag and run:
 
 ```bash
-kubectl apply -f k8s/
+kubectl -n "$DEPLOY_NAMESPACE" apply -f k8s/
 ```
 
 ## 4. Configure the Hostname
@@ -96,11 +97,11 @@ TLS is intentionally not configured in these manifests.
 Check rollout status:
 
 ```bash
-kubectl -n badminton-website rollout status deployment/badminton-website
-kubectl -n badminton-website get pods
-kubectl -n badminton-website get ingress
-kubectl -n badminton-website get quota
-kubectl -n badminton-website get hpa
+kubectl -n "$DEPLOY_NAMESPACE" rollout status deployment/badminton-website
+kubectl -n "$DEPLOY_NAMESPACE" get pods
+kubectl -n "$DEPLOY_NAMESPACE" get ingress
+kubectl -n "$DEPLOY_NAMESPACE" get quota
+kubectl -n "$DEPLOY_NAMESPACE" get hpa
 ```
 
 Check the route:
