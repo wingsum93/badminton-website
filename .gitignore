@@ -2,6 +2,7 @@
 node_modules/
 dist/
 index.html
+sitemap.xml
 pages/
 assets/css/styles.css
 npm-debug.log*

@@ -17,6 +17,7 @@ const files = [
   "pages/tactics.html",
   "pages/training.html",
   "pages/wipe-power.html",
+  "sitemap.xml",
   "assets/css/styles.css",
   "assets/js/main.js",
 ];
@@ -25,6 +26,7 @@ const contentTypes = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
 };
 
 const assets = Object.fromEntries(
